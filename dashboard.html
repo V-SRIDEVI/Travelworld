@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - TravelWorld{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-2 bg-dark text-white min-vh-100 p-3">
+            <h5 class="mb-4"><i class="fas fa-cog me-2"></i>Admin Panel</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-white active" href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('admin_destinations') }}">
+                        <i class="fas fa-map-marked-alt me-2"></i>Destinations
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('admin_packages') }}">
+                        <i class="fas fa-suitcase me-2"></i>Packages
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('admin_bookings') }}">
+                        <i class="fas fa-calendar-check me-2"></i>Bookings
+                    </a>
+                </li>
+                <li class="nav-item mt-4">
+                    <a class="nav-link text-white" href="{{ url_for('index') }}">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Site
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-10 p-4">
+            <h2 class="mb-4">Dashboard</h2>
+            
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h4 class="mb-0">{{ stats.destinations }}</h4>
+                                    <small>Destinations</small>
+                                </div>
+                                <i class="fas fa-map-marked-alt fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h4 class="mb-0">{{ stats.packages }}</h4>
+                                    <small>Packages</small>
+                                </div>
+                                <i class="fas fa-suitcase fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h4 class="mb-0">{{ stats.bookings }}</h4>
+                                    <small>Bookings</small>
+                                </div>
+                                <i class="fas fa-calendar-check fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h4 class="mb-0">{{ stats.customers }}</h4>
+                                    <small>Customers</small>
+                                </div>
+                                <i class="fas fa-users fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <a href="{{ url_for('admin_add_destination') }}" class="btn btn-primary me-2 mb-2">
+                                <i class="fas fa-plus me-1"></i>Add Destination
+                            </a>
+                            <a href="{{ url_for('admin_add_package') }}" class="btn btn-success me-2 mb-2">
+                                <i class="fas fa-plus me-1"></i>Add Package
+                            </a>
+                            <a href="{{ url_for('admin_bookings') }}" class="btn btn-warning mb-2">
+                                <i class="fas fa-list me-1"></i>View All Bookings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Recent Bookings</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if recent_bookings %}
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Customer</th>
+                                        <th>Package</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in recent_bookings %}
+                                    <tr>
+                                        <td>#{{ booking.id }}</td>
+                                        <td>{{ booking.customer.name if booking.customer else 'N/A' }}</td>
+                                        <td>{{ booking.package.name if booking.package else 'N/A' }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ 'success' if booking.status == 'confirmed' else 'warning' if booking.status == 'pending' else 'danger' }}">
+                                                {{ booking.status }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% else %}
+                            <p class="text-muted mb-0">No bookings yet</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

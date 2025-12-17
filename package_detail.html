@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ package.name }} - TravelWorld{% endblock %}
+
+{% block content %}
+<div class="package-hero" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ package.image_url or 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1200' }}');">
+    <div class="container text-center text-white py-5">
+        {% if package.is_featured %}
+        <span class="badge bg-danger mb-3 fs-6">Featured Package</span>
+        {% endif %}
+        <h1 class="display-3 fw-bold">{{ package.name }}</h1>
+        <p class="lead"><i class="fas fa-map-marker-alt me-2"></i>{{ package.destination.name if package.destination else 'Various Locations' }}</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Package Overview</h3>
+                    <p class="lead">{{ package.description }}</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4 text-center mb-3">
+                            <div class="bg-light rounded p-3">
+                                <i class="fas fa-clock fa-2x text-primary mb-2"></i>
+                                <h5>{{ package.duration_days }} Days</h5>
+                                <small class="text-muted">Duration</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center mb-3">
+                            <div class="bg-light rounded p-3">
+                                <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                                <h5>Max {{ package.max_travelers }}</h5>
+                                <small class="text-muted">Group Size</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center mb-3">
+                            <div class="bg-light rounded p-3">
+                                <i class="fas fa-dollar-sign fa-2x text-primary mb-2"></i>
+                                <h5>${{ package.price }}</h5>
+                                <small class="text-muted">Per Person</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if package.includes %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-4"><i class="fas fa-check-circle text-success me-2"></i>What's Included</h4>
+                    <div class="row">
+                        {% for item in package.includes.split('\n') %}
+                            {% if item.strip() %}
+                            <div class="col-md-6 mb-2">
+                                <i class="fas fa-check text-success me-2"></i>{{ item }}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm sticky-top" style="top: 100px;">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Book This Package</h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <span class="text-muted">Starting from</span>
+                        <h2 class="text-primary mb-0">${{ package.price }}</h2>
+                        <small class="text-muted">per person</small>
+                    </div>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Instant confirmation</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Free cancellation</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Best price guarantee</li>
+                    </ul>
+                    <a href="{{ url_for('book_package', package_id=package.id) }}" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-calendar-check me-2"></i>Book Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

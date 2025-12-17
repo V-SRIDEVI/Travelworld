@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Booking Confirmed - TravelWorld{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm text-center">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success fa-5x"></i>
+                    </div>
+                    <h1 class="mb-3">Booking Confirmed!</h1>
+                    <p class="lead text-muted mb-4">Thank you for booking with TravelWorld. Your adventure awaits!</p>
+                    
+                    <div class="bg-light rounded p-4 mb-4">
+                        <h4 class="mb-3">Booking Details</h4>
+                        <table class="table table-borderless mb-0">
+                            <tr>
+                                <td class="text-muted">Booking ID:</td>
+                                <td class="text-end"><strong>#{{ booking.id }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Package:</td>
+                                <td class="text-end"><strong>{{ booking.package.name if booking.package else 'N/A' }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Destination:</td>
+                                <td class="text-end"><strong>{{ booking.package.destination.name if booking.package and booking.package.destination else 'N/A' }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Travel Date:</td>
+                                <td class="text-end"><strong>{{ booking.travel_date.strftime('%B %d, %Y') if booking.travel_date else 'N/A' }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Travelers:</td>
+                                <td class="text-end"><strong>{{ booking.num_travelers }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Status:</td>
+                                <td class="text-end">
+                                    <span class="badge bg-{{ 'success' if booking.status == 'confirmed' else 'warning' if booking.status == 'pending' else 'danger' }}">
+                                        {{ booking.status|capitalize }}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="border-top">
+                                <td class="text-muted pt-3"><strong>Total Amount:</strong></td>
+                                <td class="text-end pt-3"><strong class="h4 text-primary">${{ booking.total_price }}</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <p class="text-muted mb-4">
+                        A confirmation email has been sent to <strong>{{ booking.customer.email if booking.customer else 'your email' }}</strong>
+                    </p>
+
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">
+                            <i class="fas fa-home me-2"></i>Back to Home
+                        </a>
+                        <a href="{{ url_for('packages') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-suitcase me-2"></i>Browse More Packages
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

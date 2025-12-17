@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero-section text-white text-center d-flex align-items-center">
+    <div class="container">
+        <h1 class="display-3 fw-bold mb-4">Discover Your Next Adventure</h1>
+        <p class="lead mb-4">Explore breathtaking destinations and create memories that last a lifetime</p>
+        <a href="{{ url_for('destinations') }}" class="btn btn-light btn-lg me-3">
+            <i class="fas fa-compass me-2"></i>Explore Destinations
+        </a>
+        <a href="{{ url_for('packages') }}" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-suitcase me-2"></i>View Packages
+        </a>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-md-4 mb-4">
+                <div class="feature-icon bg-primary text-white rounded-circle mx-auto mb-3">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <h4>Curated Destinations</h4>
+                <p class="text-muted">Hand-picked destinations for unforgettable experiences</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-icon bg-success text-white rounded-circle mx-auto mb-3">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <h4>Best Prices</h4>
+                <p class="text-muted">Competitive prices without compromising quality</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-icon bg-info text-white rounded-circle mx-auto mb-3">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h4>24/7 Support</h4>
+                <p class="text-muted">Round-the-clock assistance for all your travel needs</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Popular Destinations</h2>
+        <div class="row">
+            {% if destinations %}
+                {% for dest in destinations %}
+                <div class="col-md-4 mb-4">
+                    <div class="card destination-card h-100 shadow-sm">
+                        <img src="{{ dest.image_url or 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400' }}" 
+                             class="card-img-top" alt="{{ dest.name }}" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <span class="badge bg-primary mb-2">{{ dest.category or 'Adventure' }}</span>
+                            <h5 class="card-title">{{ dest.name }}</h5>
+                            <p class="text-muted mb-2"><i class="fas fa-map-marker-alt me-1"></i>{{ dest.country }}</p>
+                            <p class="card-text">{{ dest.description[:100] }}...</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="rating text-warning">
+                                    {% for i in range(5) %}
+                                        {% if i < dest.rating|int %}
+                                            <i class="fas fa-star"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <a href="{{ url_for('destination_detail', id=dest.id) }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-globe-americas fa-4x text-muted mb-3"></i>
+                    <h4 class="text-muted">No destinations available yet</h4>
+                    <p class="text-muted">Check back soon or add some from the admin panel!</p>
+                    <a href="{{ url_for('admin_add_destination') }}" class="btn btn-primary">Add Destination</a>
+                </div>
+            {% endif %}
+        </div>
+        {% if destinations %}
+        <div class="text-center mt-4">
+            <a href="{{ url_for('destinations') }}" class="btn btn-primary btn-lg">View All Destinations</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% if packages %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Featured Packages</h2>
+        <div class="row">
+            {% for pkg in packages %}
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card package-card h-100 shadow-sm">
+                    <div class="position-relative">
+                        <img src="{{ pkg.image_url or 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400' }}" 
+                             class="card-img-top" alt="{{ pkg.name }}" style="height: 180px; object-fit: cover;">
+                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">Featured</span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ pkg.name }}</h5>
+                        <p class="text-muted small"><i class="fas fa-clock me-1"></i>{{ pkg.duration_days }} Days</p>
+                        <p class="card-text small">{{ pkg.description[:80] }}...</p>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-primary mb-0">${{ pkg.price }}</span>
+                            <a href="{{ url_for('package_detail', id=pkg.id) }}" class="btn btn-primary btn-sm">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready for Your Next Adventure?</h2>
+        <p class="lead mb-4">Contact us today and let us help you plan the perfect trip!</p>
+        <a href="{{ url_for('contact') }}" class="btn btn-light btn-lg">Get In Touch</a>
+    </div>
+</section>
+{% endblock %}

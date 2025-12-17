@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Book {{ package.name }} - TravelWorld{% endblock %}
+
+{% block content %}
+<div class="page-header bg-primary text-white py-5">
+    <div class="container">
+        <h1 class="display-4"><i class="fas fa-calendar-check me-3"></i>Book Your Trip</h1>
+        <p class="lead">{{ package.name }}</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="card-title mb-4">Booking Information</h3>
+                    <form method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Full Name *</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email Address *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" name="phone">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="travel_date" class="form-label">Travel Date *</label>
+                                <input type="date" class="form-control" id="travel_date" name="travel_date" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="num_travelers" class="form-label">Number of Travelers *</label>
+                            <select class="form-select" id="num_travelers" name="num_travelers" required>
+                                {% for i in range(1, package.max_travelers + 1) %}
+                                <option value="{{ i }}">{{ i }} {{ 'Person' if i == 1 else 'People' }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="special_requests" class="form-label">Special Requests</label>
+                            <textarea class="form-control" id="special_requests" name="special_requests" rows="3" 
+                                      placeholder="Any dietary requirements, accessibility needs, or special requests..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-check-circle me-2"></i>Confirm Booking
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <img src="{{ package.image_url or 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400' }}" 
+                     class="card-img-top" alt="{{ package.name }}" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ package.name }}</h5>
+                    <p class="text-muted mb-2">
+                        <i class="fas fa-map-marker-alt me-1"></i>{{ package.destination.name if package.destination else 'Various' }}
+                    </p>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Duration:</span>
+                        <strong>{{ package.duration_days }} Days</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Price per person:</span>
+                        <strong class="text-primary">${{ package.price }}</strong>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <span class="h5">Total:</span>
+                        <span class="h5 text-primary" id="totalPrice">${{ package.price }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('num_travelers').addEventListener('change', function() {
+    const price = {{ package.price }};
+    const travelers = parseInt(this.value);
+    const total = price * travelers;
+    document.getElementById('totalPrice').textContent = '$' + total.toFixed(2);
+});
+</script>
+{% endblock %}

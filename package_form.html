@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ 'Edit' if package else 'Add' }} Package - TravelWorld{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-2 bg-dark text-white min-vh-100 p-3">
+            <h5 class="mb-4"><i class="fas fa-cog me-2"></i>Admin Panel</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('admin_destinations') }}">
+                        <i class="fas fa-map-marked-alt me-2"></i>Destinations
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white active" href="{{ url_for('admin_packages') }}">
+                        <i class="fas fa-suitcase me-2"></i>Packages
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('admin_bookings') }}">
+                        <i class="fas fa-calendar-check me-2"></i>Bookings
+                    </a>
+                </li>
+                <li class="nav-item mt-4">
+                    <a class="nav-link text-white" href="{{ url_for('index') }}">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Site
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-10 p-4">
+            <h2 class="mb-4">{{ 'Edit' if package else 'Add New' }} Package</h2>
+
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label for="name" class="form-label">Package Name *</label>
+                                <input type="text" class="form-control" id="name" name="name" 
+                                       value="{{ package.name if package else '' }}" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="destination_id" class="form-label">Destination *</label>
+                                <select class="form-select" id="destination_id" name="destination_id" required>
+                                    <option value="">Select Destination</option>
+                                    {% for dest in destinations %}
+                                    <option value="{{ dest.id }}" {% if package and package.destination_id == dest.id %}selected{% endif %}>
+                                        {{ dest.name }} ({{ dest.country }})
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description *</label>
+                            <textarea class="form-control" id="description" name="description" rows="4" required>{{ package.description if package else '' }}</textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label for="duration_days" class="form-label">Duration (Days) *</label>
+                                <input type="number" class="form-control" id="duration_days" name="duration_days" 
+                                       min="1" value="{{ package.duration_days if package else '' }}" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="price" class="form-label">Price ($) *</label>
+                                <input type="number" class="form-control" id="price" name="price" 
+                                       min="0" step="0.01" value="{{ package.price if package else '' }}" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="max_travelers" class="form-label">Max Travelers</label>
+                                <input type="number" class="form-control" id="max_travelers" name="max_travelers" 
+                                       min="1" value="{{ package.max_travelers if package else 20 }}">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">&nbsp;</label>
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" id="is_featured" name="is_featured" 
+                                           {% if package and package.is_featured %}checked{% endif %}>
+                                    <label class="form-check-label" for="is_featured">Featured Package</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="includes" class="form-label">What's Included (one item per line)</label>
+                            <textarea class="form-control" id="includes" name="includes" rows="4" 
+                                      placeholder="Accommodation&#10;Meals&#10;Transportation&#10;Guide">{{ package.includes if package else '' }}</textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label for="image_url" class="form-label">Image URL</label>
+                            <input type="url" class="form-control" id="image_url" name="image_url" 
+                                   value="{{ package.image_url if package else '' }}"
+                                   placeholder="https://example.com/image.jpg">
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>{{ 'Update' if package else 'Add' }} Package
+                            </button>
+                            <a href="{{ url_for('admin_packages') }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

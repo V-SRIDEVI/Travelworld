@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ destination.name }} - TravelWorld{% endblock %}
+
+{% block content %}
+<div class="destination-hero" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ image_url or (destination.image_url or 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1200') }}');">
+    <div class="container text-center text-white py-5">
+        <span class="badge bg-primary mb-3 fs-6">{{ destination.category or 'Adventure' }}</span>
+        <h1 class="display-3 fw-bold">{{ destination.name }}</h1>
+        <p class="lead"><i class="fas fa-map-marker-alt me-2"></i>{{ destination.country }}</p>
+        <div class="rating text-warning fs-4">
+            {% for i in range(5) %}
+                {% if i < destination.rating|int %}
+                    <i class="fas fa-star"></i>
+                {% else %}
+                    <i class="far fa-star"></i>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">About {{ destination.name }}</h3>
+                        <p class="lead">{{ destination.description }}</p>
+                        {% if destination.image_url %}
+                            <div class="mb-4">
+                                <img src="{{ image_url or destination.image_url }}" alt="{{ destination.name }}" width="300" class="img-fluid">
+                            </div>
+                        {% endif %}
+                </div>
+            </div>
+
+            <h3 class="mb-4">Available Packages</h3>
+            <div class="row">
+                {% if destination.packages %}
+                    {% for pkg in destination.packages %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <img src="{{ pkg.image_url or 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400' }}" 
+                                 class="card-img-top" alt="{{ pkg.name }}" style="height: 180px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ pkg.name }}</h5>
+                                <p class="text-muted"><i class="fas fa-clock me-1"></i>{{ pkg.duration_days }} Days</p>
+                                <p class="card-text">{{ pkg.description[:100] }}...</p>
+                            </div>
+                            <div class="card-footer bg-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="h5 text-primary mb-0">${{ pkg.price }}</span>
+                                    <a href="{{ url_for('book_package', package_id=pkg.id) }}" class="btn btn-primary">Book Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>No packages available for this destination yet.
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm sticky-top" style="top: 100px;">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Quick Info</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="fas fa-globe text-primary me-2"></i>
+                            <strong>Country:</strong> {{ destination.country }}
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-tag text-primary me-2"></i>
+                            <strong>Category:</strong> {{ destination.category or 'Adventure' }}
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-star text-primary me-2"></i>
+                            <strong>Rating:</strong> {{ destination.rating }}/5
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-suitcase text-primary me-2"></i>
+                            <strong>Packages:</strong> {{ destination.packages|length }} available
+                        </li>
+                    </ul>
+                    <hr>
+                    <a href="{{ url_for('contact') }}" class="btn btn-primary w-100">
+                        <i class="fas fa-envelope me-2"></i>Inquire Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
